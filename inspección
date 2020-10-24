@@ -1,0 +1,8 @@
+Para el equipo
+Alimentación eléctrica /Revise conexiones electricas, alimentación de la placa
+Conexión a octocmms / revise señal internet. conexión alimentación raspberry/ Reinicie el programa y reconecte
+Sistema Mecánico /deshabilite motores y mueva manualmente el carro extrusor y cama según corresponda/ En caso de no haber cumplido las 200 horas, revise las correas y verifique su anclaje con la polea dentada, así como con el carro extrusor o la cama según corresponda.
+Nivelación de la cama. /deshabilite los motores y verique distancia vertical entre boquilla y cama. Esta debe ser aproximadamente la mitad del diámetro de la boquilla y paralela al plano de desplazamiento x-y.
+Sistema térmico / Revise que boquilla y cama estén limpias y sin restos de filamento extruido, y que la cama no tenga restos de plástico o superficies de apoyo. Precaliente desde Octoprint y verifique que llegue correctamente a la temperatura configurada / 
+Sistema de extrusión /una vez precalentada la boquilla, extruir filamento y verificar uniformidad del flujo
+

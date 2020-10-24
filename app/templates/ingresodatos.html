@@ -1,0 +1,139 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+
+{% for message in get_flashed_messages() %}
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+  {{ message }}
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+{% endfor %}
+<div class="row">
+  <div class="col-md-5">
+    <div class="card card-body">
+      <form id="forminiciar" action="/ingresodatos" method="POST">
+        <fieldset>
+          <legend>Realizar Mantenimiento</legend>
+
+            <div class="form-group">
+              <input type="text" name="mantenimiento" placeholder="mantenimiento" class="form-control">
+
+            </div>
+
+            <div class="form-group">
+              <input type="text" name="sistema" placeholder="sistema" class="form-control">
+
+            </div>
+
+            <div class="form-group">
+              <input type="text" name="falla" placeholder="falla" class="form-control">
+            </div>
+
+
+            <button type="submit" class="btn btn-primary btn-block">guardar
+            </button>
+          </fieldset>
+      </form>
+
+    </div>
+
+    <div class="card card-body">
+      <fieldset>
+      <legend>Última Acción de Mantenimiento</legend>
+      <table class="table table-dark" width="200">
+        <thead>
+          <tr>
+            <td>Marca Temporal</td>
+            <td>Mantenimiento</td>
+            <td>Sistema</td>
+            <td>Falla</td>
+            <td>Estado</td>
+            <td>Operaciones</td>
+
+          </tr>
+        </thead>
+        <tbody>
+          {% for mant in tipomant %}
+          <tr>
+            <td>{{ mant.1 }}</td>
+            <td>{{ mant.2 }}</td>
+            <td>{{ mant.3 }}</td>
+            <td>{{ mant.4 }}</td>
+            <td>{{ mant.5 }}</td>
+            <td><a href="/eliminar/{{ mant.0 }}" class="btn btn-warning">Eliminar registro</a></td>
+          </tr>
+
+          {% endfor %}
+        </tbody>
+      </table>
+        </fieldset>
+    <form action="/terminar" method="POST"><button type="submit" class="btn btn-primary btn-block">Terminar Mantenimiento</button></form>
+    </div>
+
+  </div>
+  <div class="col-md-7">
+    <div class="card card-body">
+      <fieldset>
+        <legend>Inspección previa a utilizar la máquina</legend>
+        <ul>
+          <li> <strong>Alimentación Eléctrica:</strong> Revise la conexión de la fuente de alimentación de la máquina
+          </li>
+          <li><strong>Conexión a OCTOCMMS:</strong> Revise su conexión a internet y que la máquina esté debidamente conectada al software</li>
+          <li><strong>Sistema Mecánico:</strong> deshabilite motores y mueva manualmente el carro extrusor y cama según corresponda</li>
+          <li><strong>Nivelación de la cama:</strong> deshabilite los motores y verique distancia vertical entre boquilla y cama. Esta debe ser aproximadamente la mitad del diámetro de la boquilla y paralela al plano de desplazamiento x-y</li>
+          <li><strong>Sistema térmico:</strong> Revise que boquilla y cama estén limpias y sin restos de filamento extruido, y que la cama no tenga restos de plástico o superficies de apoyo. Precaliente desde Octoprint y verifique que llegue correctamente a la temperatura configurada.</li>
+          <li><strong>Sistema de extrusión:</strong> una vez precalentada la boquilla, extruir filamento y verificar uniformidad del flujo</li>
+        </ul>
+        <form action="/inspeccionprevia" method="POST"><button type="submit" name="button" class="btn btn-primary btn-block">Listo</button></form>
+
+      </fieldset>
+
+
+    </div>
+    <div class="card card-body">
+
+        <table class="table table-dark">
+          <thead>
+            <tr>
+              <td>Última revisión previa</td>
+              <td>Estado</td>
+            </tr>
+          </thead>
+          <tbody>
+
+            {% for rev in inspeccion %}
+            <td>{{ rev.1 }}</td>
+            <td>{{ rev.2 }}</td>
+
+
+            {% endfor %}
+
+          </tbody>
+        </table>
+
+
+
+    </div>
+
+  </div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% endblock %}
