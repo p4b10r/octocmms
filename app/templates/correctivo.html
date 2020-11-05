@@ -1,0 +1,89 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+
+{% for message in get_flashed_messages() %}
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+  {{ message }}
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+{% endfor %}
+<div class="col-md-12">
+
+    <form id="forminiciar" class="row-fluid well" action="/ingresodatos" method="POST">
+      <fieldset>
+        <legend>Registro de falla</legend>
+        <div class="form-row">
+
+          <div class="form-group col-md-3">
+          <input type="text"  name="impresora" placeholder="impresora" class="form-control">
+          </div>
+
+          <div class="form-group col-md-3">
+          <input type="text"  name="mantenimiento" placeholder="mantenimiento" class="form-control">
+          </div>
+
+
+          <div class="form-group col-md-3">
+          <input type="text" name="sistema" placeholder="sistema" class="form-control">
+          </div>
+
+          <div class="form-group col-md-3">
+          <input type="text" name="falla" placeholder="falla" class="form-control">
+          </div>
+
+        </div>
+
+
+
+
+
+          <button type="submit" class="btn btn-primary btn-block">Iniciar mantenimiento correctivo
+          </button>
+        </fieldset>
+    </form>
+
+
+
+  <div class="card card-body">
+    <form action="/terminar" method="POST"><button type="submit" class="btn btn-primary btn-block">Terminar Mantenimiento</button></form>
+    <fieldset>
+    <legend>Última Acción de Mantenimiento</legend>
+    <table class="table table-dark" width="200">
+      <thead>
+        <tr>
+          <td>Marca Temporal</td>
+          <td>Impresora</td>
+          <td>Mantenimiento</td>
+          <td>Sistema</td>
+          <td>Falla</td>
+          <td>Estado</td>
+          <td>Operaciones</td>
+
+        </tr>
+      </thead>
+      <tbody>
+        {% for mant in tipomant %}
+        <tr>
+          <td>{{ mant.1 }}</td>
+          <td>{{ mant.2 }}</td>
+          <td>{{ mant.3 }}</td>
+          <td>{{ mant.4 }}</td>
+          <td>{{ mant.5 }}</td>
+          <td>{{ mant.6 }}</td>
+          <td><a href="/eliminar/{{ mant.0 }}" class="btn btn-warning">Eliminar registro</a></td>
+        </tr>
+
+        {% endfor %}
+      </tbody>
+    </table>
+      </fieldset>
+
+  </div>
+
+</div>
+
+{% endblock %}

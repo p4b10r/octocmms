@@ -32,20 +32,22 @@ def Index():
 
 @app.route("/ingresodatos",methods=["GET","POST"])
 def IngresarDatos():
+    cur=mysql.connection.cursor()
+    cur.execute("SELECT * FROM correctivo ORDER BY id DESC LIMIT 4")
+    data=cur.fetchall()
+
+
     if request.method=="POST":
+        impresora=request.form["impresora"]
         mantenimiento=request.form["mantenimiento"]
         sistema=request.form["sistema"]
         falla=request.form["falla"]
 
         estado=str("En proceso")
         cur=mysql.connection.cursor()
-        mtbf="mtbf"
-        cur.execute("INSERT INTO correctivo (Mantenimiento, Sistema, Falla, Estado, mtbf) VALUES(%s,%s,%s,%s,%s) ",(mantenimiento,sistema,falla,estado,mtbf))
+
+        cur.execute("INSERT INTO correctivo (impresora, Mantenimiento, Sistema, Falla, Estado) VALUES(%s,%s,%s,%s,%s) ",(impresora,mantenimiento,sistema,falla,estado))
         mysql.connection.commit()
-
-
-
-
 
         cur=mysql.connection.cursor()
         cur.execute("SELECT id, tiempo, Mantenimiento, Sistema, Falla, Estado FROM correctivo WHERE estado='En proceso'")
@@ -54,11 +56,8 @@ def IngresarDatos():
             for row in results:
                 csv.writer(file).writerow(row)
 
-
-
-
         flash("Mantenimiento Iniciado. Al finalizar marque la actividad como terminada")
-    return redirect(url_for("Index"))
+    return render_template("correctivo.html",tipomant=data)
 
 @app.route("/eliminar/<string:id>")
 def EliminarMantenimiento(id):
@@ -66,22 +65,25 @@ def EliminarMantenimiento(id):
     cur.execute("DELETE FROM correctivo WHERE id= %s ", [id])
     mysql.connection.commit()
     flash("Mantenimiento Removido")
-    return redirect(url_for("Index"))
+    return redirect(url_for("IngresarDatos"))
 
 @app.route("/terminar",methods=["POST"])
 def TerminarMantenimiento():
     if request.method=="POST":
 
         cur=mysql.connection.cursor()
-        cur.execute("SELECT Mantenimiento FROM correctivo ORDER BY Mantenimiento DESC LIMIT 1")
+        cur.execute("SELECT impresora FROM correctivo ORDER BY id DESC LIMIT 1")
+        impresora=cur.fetchone()
+        cur.execute("SELECT Mantenimiento FROM correctivo ORDER BY id DESC LIMIT 1")
         mantenimiento=cur.fetchone()
-        cur.execute("SELECT Falla FROM correctivo ORDER BY Falla DESC LIMIT 1")
+        cur.execute("SELECT Falla FROM correctivo ORDER BY id DESC LIMIT 1")
         falla=cur.fetchone()
-        cur.execute("SELECT Sistema FROM correctivo ORDER BY Falla DESC LIMIT 1")
+        cur.execute("SELECT Sistema FROM correctivo ORDER BY id DESC LIMIT 1")
         sistema=cur.fetchone()
         estado=str("Terminado")
-        mtbf="mtbf"
-        cur.execute("INSERT INTO correctivo (Mantenimiento, Sistema, Falla, Estado, mtbf) VALUES (%s, %s,%s,%s, %s)",(mantenimiento,sistema, falla,estado, mtbf))
+
+
+        cur.execute("INSERT INTO correctivo (impresora, Mantenimiento, Sistema, Falla, Estado) VALUES (%s, %s,%s,%s, %s)",(impresora,mantenimiento,sistema, falla,estado))
         mysql.connection.commit()
         cur=mysql.connection.cursor()
         cur.execute("SELECT id, tiempo, Mantenimiento, Sistema, Falla, Estado FROM correctivo WHERE estado='Terminado'")
@@ -90,7 +92,7 @@ def TerminarMantenimiento():
             for row in results:
                 csv.writer(file).writerow(row)
         flash("Mantenimiento Terminado")
-    return redirect(url_for("Index"))
+    return redirect(url_for("IngresarDatos"))
 
 @app.route("/inspeccionprevia", methods=["POST"])
 def InspeccionPrevia():
@@ -100,4 +102,9 @@ def InspeccionPrevia():
         cur.execute("INSERT INTO inspeccion_previa (inspeccion_diaria) VALUES (%s)",(inspeccionlista,))
         mysql.connection.commit()
     flash("Inspeccion Previa Realizada")
+    return redirect(url_for("Index"))
+
+
+@app.route("/planificar", methods=["POST"])
+def Planificar():
     return redirect(url_for("Index"))
